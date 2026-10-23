@@ -53,18 +53,18 @@ def _gemini_generate(
 
 
 def _log_gemini_failure(workflow: str, exc: Exception) -> None:
-    """Log a safe error category without credentials or request contents."""
+    """Log safe Gemini diagnostics without credentials or request contents."""
     status_code = getattr(exc, "status_code", None)
     error_type = type(exc).__name__
 
-    # Avoid logging exception messages: SDK errors can contain request details.
+    # Log only the exception class and numeric HTTP status.
+    # Do not log exception messages, which may contain sensitive details.
     logger.warning(
         "Gemini request failed; workflow=%s error_type=%s status_code=%s",
         workflow,
         error_type,
         status_code if isinstance(status_code, int) else "unknown",
     )
-
 
 def analyze_safety(description: str, weather: str, site_context: str) -> dict:
     if _ai_enabled():
